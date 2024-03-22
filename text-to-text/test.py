@@ -79,4 +79,4 @@ response = runtime.invoke_model(
 
 
 response_body = json.loads(response.get("body").read())
-print(response_body)
+print(response_body["content"][0]["text"])
