@@ -10,6 +10,41 @@ function Generate() {
     const [slidesFile, setSlidesFile] = useState<File | null>(null);
     const [textFile, setTextFile] = useState<File | null>(null);
 
+    const generate = async () => {
+        const files = {
+            recording: recordingFile ? recordingFile.name : undefined,
+            slides: slidesFile ? slidesFile.name : undefined,
+            text: textFile ? textFile.name : undefined,
+        };
+
+        // Filter out undefined properties if you don't want them in the final JSON
+        const filteredFiles = Object.entries(files).reduce((acc, [key, value]) => {
+            if (value !== undefined) acc[key] = value;
+            return acc;
+        }, {} as { [key: string]: string });
+
+        // Convert the object to a JSON string
+        const filesJson = JSON.stringify(filteredFiles);
+
+        try {
+            const response = await fetch('http://127.0.0.1:5000/api/go', {
+                method: 'POST',
+                body: filesJson,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            console.log('Files uploaded successfully!');
+        } catch (error) {
+            console.error('Error uploading files:', error);
+        }
+    };
+
     return (
         <Flex direction='column' justify='center' align='center' w='100%' gap='2em' mt='4em'>
             <Flex gap='2em'>
@@ -21,7 +56,7 @@ function Generate() {
                 <ImportCards label={'Lecture Slides'} imgSrc={slides} setFile={setSlidesFile}></ImportCards>
                 <ImportCards label={'Text Notes'} imgSrc={notes} setFile={setTextFile}></ImportCards>
             </Flex>
-            <Button w='7em'>Go!</Button>
+            <Button w='7em' onClick={generate}>Go!</Button>
         </Flex>
     );
 }

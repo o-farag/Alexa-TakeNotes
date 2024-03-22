@@ -17,8 +17,7 @@ function ImportCards(props: ImportCardProps) {
                     fit='contain'
                 />
                 <Text mt='1.5em' ta='center' fw={500}>{props.label}</Text>
-                <FileButton
-                    onChange={props.setFile} accept="image/png,image/jpeg">
+                <FileButton onChange={props.setFile}>
                     {(props) => <Button  {...props} w='10em' mt='0.5em' radius="md" variant='outline'>
                         Import
                     </Button>}
